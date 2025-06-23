@@ -26,9 +26,8 @@
 
 | Frontend               | Backend           | Base de données  |
 |------------------------|-------------------|------------------|
-| ReactJS (ViteJS)       | ExpressJS         | MongoDB          |
-| Formik + Yup           | Mongoose          | Atlas (Cloud)    |
-| TailwindCSS            | JWT               |                  |
+| ReactJS (ViteJS)       | ExpressJS         | MongoDB          |    
+| TailwindCSS            | JWT               | Mongoose         |
 
 ---
 
