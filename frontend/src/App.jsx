@@ -5,6 +5,7 @@ import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import BookForm from './pages/BookForm';
 import Sidebar from './components/Sidebar/Sidebar';
+import Profile from './pages/Profile';
 
 const Layout = ({ children }) => (
   <div style={{ display: 'flex' }}>
@@ -24,6 +25,7 @@ const App = () => {
         <Route path="/register" element={<Register />} />
         <Route path="/dashboard" element={<Layout><Dashboard /></Layout>} />
         <Route path="/add-book" element={<Layout><BookForm /></Layout>} />
+        <Route path="/profile" element={<Layout><Profile /></Layout>} />
         {/* D'autres routes à venir, protégées par Layout */}
       </Routes>
     </Router>
