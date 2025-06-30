@@ -1,19 +1,29 @@
 import React, { useState } from 'react';
+import { register } from '../api/auth';
 
 const Register = () => {
   const [nom, setNom] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setError('');
+    setSuccess(false);
     if (password !== confirmPassword) {
-      alert('Les mots de passe ne correspondent pas');
+      setError('Les mots de passe ne correspondent pas');
       return;
     }
-    // TODO: Appel à l'API pour s'inscrire
-    alert('Inscription non implémentée');
+    try {
+      await register(nom, email, password);
+      setSuccess(true);
+      // Rediriger ou afficher un message de succès
+    } catch (err) {
+      setError(err.message);
+    }
   };
 
   return (
@@ -50,6 +60,8 @@ const Register = () => {
         />
         <button type="submit">S'inscrire</button>
       </form>
+      {error && <p style={{color: 'red'}}>{error}</p>}
+      {success && <p style={{color: 'green'}}>Inscription réussie ! Vous pouvez vous connecter.</p>}
       <p>Déjà un compte ? <a href="/login">Se connecter</a></p>
     </div>
   );
