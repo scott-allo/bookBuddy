@@ -1,13 +1,22 @@
 import React, { useState } from 'react';
+import { login } from '../api/auth';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // TODO: Appel à l'API pour se connecter
-    alert('Connexion non implémentée');
+    setError('');
+    try {
+      const data = await login(email, password);
+      localStorage.setItem('token', data.token);
+      // Rediriger vers le dashboard ou autre
+      alert('Connexion réussie !');
+    } catch (err) {
+      setError(err.message);
+    }
   };
 
   return (
@@ -30,6 +39,7 @@ const Login = () => {
         />
         <button type="submit">Se connecter</button>
       </form>
+      {error && <p style={{color: 'red'}}>{error}</p>}
       <p>Pas encore de compte ? <a href="/register">Créer un compte</a></p>
     </div>
   );
