@@ -20,7 +20,6 @@ const Register = () => {
     try {
       await register(nom, email, password);
       setSuccess(true);
-      // Rediriger ou afficher un message de succès
     } catch (err) {
       setError(err.message);
     }

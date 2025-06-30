@@ -8,7 +8,6 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
 
-  // À adapter : récupérer l'userId et le token depuis le stockage/localStorage
   const userId = localStorage.getItem('userId');
   const token = localStorage.getItem('token');
 

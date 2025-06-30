@@ -12,8 +12,9 @@ const Login = () => {
     try {
       const data = await login(email, password);
       localStorage.setItem('token', data.token);
+      localStorage.setItem('userId', data.user.id);
       // Rediriger vers le dashboard ou autre
-      alert('Connexion réussie !');
+      window.location.href = '/dashboard';
     } catch (err) {
       setError(err.message);
     }
