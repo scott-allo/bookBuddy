@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react';
-import { getUserBooks } from '../api/books';
-import BookForm from './BookForm';
+import React, { useState } from 'react';
 import BookModal from '../components/BookModal';
 
-const Dashboard = ({ books, favorites, onToggleFavorite }) => {
+const Favorites = ({ books, favorites, onToggleFavorite }) => {
   const [selectedBook, setSelectedBook] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
+
+  const favoriteBooks = books.filter(book => favorites.includes(book._id));
 
   const handleOpenModal = (book) => {
     setSelectedBook(book);
@@ -17,8 +17,8 @@ const Dashboard = ({ books, favorites, onToggleFavorite }) => {
   };
 
   return (
-    <div className="dashboard-container" style={{padding: '32px 0'}}>
-      <h2 style={{fontWeight: 700, fontSize: 28, marginBottom: 32, letterSpacing: 1}}>MY LIBRARY</h2>
+    <div className="favorites-container" style={{padding: '32px 0'}}>
+      <h2 style={{fontWeight: 700, fontSize: 28, marginBottom: 32, letterSpacing: 1}}>FAVORIS</h2>
       <div className="book-list" style={{
         display: 'grid',
         gridTemplateColumns: 'repeat(auto-fit, minmax(170px, 1fr))',
@@ -27,10 +27,10 @@ const Dashboard = ({ books, favorites, onToggleFavorite }) => {
         alignItems: 'start',
         marginTop: 16
       }}>
-        {books.length === 0 ? (
-          <p>Aucun livre dans votre collection.</p>
+        {favoriteBooks.length === 0 ? (
+          <p>Aucun favori pour le moment.</p>
         ) : (
-          books.map(book => (
+          favoriteBooks.map(book => (
             <div key={book._id} className="book-card" style={{
               background: 'transparent',
               border: 'none',
@@ -72,4 +72,4 @@ const Dashboard = ({ books, favorites, onToggleFavorite }) => {
   );
 };
 
-export default Dashboard; 
+export default Favorites; 
