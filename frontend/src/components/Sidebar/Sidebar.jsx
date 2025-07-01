@@ -7,17 +7,22 @@ const Sidebar = () => {
     <nav className="sidebar">
       <ul>
         <li>
-          <NavLink to="/dashboard" activeclassname="active">
+          <NavLink to="/dashboard" activeClassName="active">
             📚 Ma bibliothèque
           </NavLink>
         </li>
         <li>
-          <NavLink to="/favorites" activeclassname="active">
+          <NavLink to="/add-book" activeClassName="active">
+            ➕ Ajouter un livre
+          </NavLink>
+        </li>
+        <li>
+          <NavLink to="/favorites" activeClassName="active">
             ⭐ Favoris
           </NavLink>
         </li>
         <li>
-          <NavLink to="/profile" activeclassname="active">
+          <NavLink to="/profile" activeClassName="active">
             👤 Profil
           </NavLink>
         </li>
