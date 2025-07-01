@@ -120,23 +120,6 @@ const BookForm = ({ onBookAdded }) => {
           onFocus={e => e.target.style.border = '1.5px solid #5396e8'}
           onBlur={e => e.target.style.border = '1.5px solid #bfc8d6'}
         />
-        <input
-          type="text"
-          placeholder="Image de couverture (URL)"
-          value={image_url}
-          onChange={e => setImageUrl(e.target.value)}
-          disabled={!!coverFile}
-          style={{
-            padding: 12,
-            borderRadius: 10,
-            border: '1.5px solid #bfc8d6',
-            fontSize: 16,
-            transition: 'border 0.2s',
-            outline: 'none'
-          }}
-          onFocus={e => e.target.style.border = '1.5px solid #5396e8'}
-          onBlur={e => e.target.style.border = '1.5px solid #bfc8d6'}
-        />
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
           <input
             id="cover-upload"
@@ -152,22 +135,22 @@ const BookForm = ({ onBookAdded }) => {
               background: '#5396e8',
               color: '#fff',
               border: 'none',
-              borderRadius: 8,
-              padding: '10px 28px',
-              fontWeight: 600,
-              fontSize: 16,
-              marginBottom: 8,
+              borderRadius: 10,
+              padding: '16px 0',
+              fontWeight: 700,
+              fontSize: 22,
+              width: '100%',
               cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              gap: 8,
               boxShadow: '0 2px 8px #0001',
-              transition: 'background 0.2s'
+              letterSpacing: 1,
+              transition: 'background 0.2s',
+              marginBottom: 8,
+              marginTop: 0
             }}
             onMouseOver={e => e.target.style.background = '#3973b8'}
             onMouseOut={e => e.target.style.background = '#5396e8'}
           >
-            <span role="img" aria-label="image">🖼️</span> Choisir une image
+            <span role="img" aria-label="image"></span> Choisir la cover
           </button>
           {coverPreview && <img src={coverPreview} alt="aperçu couverture" style={{ width: 110, margin: '10px auto', display: 'block', borderRadius: 10, boxShadow: '0 2px 12px #0002', border: '2px solid #e3e6ee' }} />}
         </div>
