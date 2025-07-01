@@ -4,14 +4,28 @@ const User = require('../models/User');
 // Ajouter un nouveau livre à la collection de l'utilisateur
 exports.addBook = async (req, res) => {
   try {
-    const { titre, auteur, image_url, nb_pages, categorie, progression, userId } = req.body;
-    const livre = new Livre({ titre, auteur, image_url, nb_pages, categorie, progression });
+    console.log('BODY:', req.body);
+    console.log('FILE:', req.file);
+    const { titre, auteur, image_url, nb_pages, categorie, status, userId } = req.body;
+    let imagePath = image_url;
+    if (req.file) {
+      imagePath = '/uploads/' + req.file.filename;
+    }
+    const livre = new Livre({
+      titre,
+      auteur,
+      image_url: imagePath,
+      nb_pages: Number(nb_pages),
+      categorie,
+      progression: 0, // par défaut
+      status
+    });
     const savedBook = await livre.save();
-    // Ajouter le livre à la collection de l'utilisateur
     await User.findByIdAndUpdate(userId, { $push: { livres: savedBook._id } });
     res.status(201).json(savedBook);
   } catch (err) {
-    res.status(500).json({ message: 'Erreur lors de l\'ajout du livre', error: err.message });
+    console.error(err);
+    res.status(500).json({ message: "Erreur lors de l'ajout du livre", error: err.message });
   }
 };
 

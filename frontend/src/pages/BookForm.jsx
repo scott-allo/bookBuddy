@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { addBook } from '../api/books';
 
 const BookForm = ({ onBookAdded }) => {
@@ -12,6 +12,10 @@ const BookForm = ({ onBookAdded }) => {
   const [success, setSuccess] = useState(false);
   const [coverFile, setCoverFile] = useState(null);
   const [coverPreview, setCoverPreview] = useState('');
+  const [search, setSearch] = useState('');
+  const [results, setResults] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [selectedSynopsis, setSelectedSynopsis] = useState('');
 
   const userId = localStorage.getItem('userId');
   const token = localStorage.getItem('token');
@@ -51,6 +55,39 @@ const BookForm = ({ onBookAdded }) => {
     }
   };
 
+  // Autocomplétion Jikan
+  useEffect(() => {
+    if (search.length < 2) {
+      setResults([]);
+      return;
+    }
+    setLoading(true);
+    const timeout = setTimeout(async () => {
+      try {
+        const res = await fetch(`https://api.jikan.moe/v4/manga?q=${encodeURIComponent(search)}&limit=5`);
+        const data = await res.json();
+        setResults(data.data || []);
+      } catch (err) {
+        setResults([]);
+      } finally {
+        setLoading(false);
+      }
+    }, 400); // délai pour éviter trop de requêtes
+    return () => clearTimeout(timeout);
+  }, [search]);
+
+  // Sélection d'un manga Jikan
+  const handleSelect = (manga) => {
+    setTitre(manga.title || '');
+    setAuteur(manga.authors && manga.authors[0] ? manga.authors[0].name : '');
+    setCategorie(manga.genres && manga.genres[0] ? manga.genres[0].name : '');
+    setImageUrl(manga.images?.jpg?.large_image_url || manga.images?.jpg?.image_url || '');
+    setCoverPreview(manga.images?.jpg?.large_image_url || manga.images?.jpg?.image_url || '');
+    setSelectedSynopsis(manga.synopsis || '');
+    setResults([]);
+    setSearch(manga.title || '');
+  };
+
   return (
     <div
       className="book-form-container"
@@ -71,6 +108,30 @@ const BookForm = ({ onBookAdded }) => {
       }}>
         AJOUTER UN LIVRE
       </h2>
+
+      {/* Autocomplétion Jikan */}
+      <div style={{ width: 420, marginBottom: 10, position: 'relative' }}>
+        <input
+          type="text"
+          placeholder="Rechercher un manga (API Jikan)"
+          value={search}
+          onChange={e => setSearch(e.target.value)}
+          style={{ width: '100%', padding: 10, borderRadius: 8, border: '1.5px solid #bfc8d6', fontSize: 15 }}
+        />
+        {loading && <div style={{ color: '#5396e8', marginTop: 4 }}>Recherche...</div>}
+        {results.length > 0 && (
+          <ul style={{ position: 'absolute', zIndex: 10, width: '100%', background: '#fff', borderRadius: 10, boxShadow: '0 2px 12px #0001', padding: 0, margin: 0, listStyle: 'none', maxHeight: 220, overflowY: 'auto' }}>
+            {results.map(manga => (
+              <li key={manga.mal_id} onClick={() => handleSelect(manga)} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: 10, cursor: 'pointer', borderBottom: '1px solid #eee' }}>
+                <img src={manga.images?.jpg?.image_url} alt={manga.title} width={40} style={{ borderRadius: 6 }} />
+                <span style={{ fontWeight: 500 }}>{manga.title}</span>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+
+      {/* Formulaire principal */}
       <form
         onSubmit={handleSubmit}
         encType="multipart/form-data"
@@ -152,7 +213,8 @@ const BookForm = ({ onBookAdded }) => {
           >
             <span role="img" aria-label="image"></span> Choisir la cover
           </button>
-          {coverPreview && <img src={coverPreview} alt="aperçu couverture" style={{ width: 110, margin: '10px auto', display: 'block', borderRadius: 10, boxShadow: '0 2px 12px #0002', border: '2px solid #e3e6ee' }} />}
+          {/* Affichage de la cover sélectionnée ou de l'image Jikan */}
+          {(coverPreview || image_url) && <img src={coverPreview || image_url} alt="aperçu couverture" style={{ width: 110, margin: '10px auto', display: 'block', borderRadius: 10, boxShadow: '0 2px 12px #0002', border: '2px solid #e3e6ee' }} />}
         </div>
         <select
           value={status}
@@ -204,6 +266,22 @@ const BookForm = ({ onBookAdded }) => {
           onFocus={e => e.target.style.border = '1.5px solid #5396e8'}
           onBlur={e => e.target.style.border = '1.5px solid #bfc8d6'}
         />
+        {/* Champ synopsis pré-rempli si manga sélectionné */}
+        {selectedSynopsis && (
+          <textarea
+            value={selectedSynopsis}
+            readOnly
+            style={{
+              padding: 12,
+              borderRadius: 10,
+              border: '1.5px solid #bfc8d6',
+              fontSize: 15,
+              background: '#f7f8fa',
+              color: '#223',
+              minHeight: 80
+            }}
+          />
+        )}
         <button
           type="submit"
           style={{

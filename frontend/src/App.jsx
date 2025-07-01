@@ -9,6 +9,7 @@ import Profile from './pages/Profile';
 import Favorites from './pages/Favorites';
 import { useEffect, useState } from 'react';
 import { getUserBooks } from './api/books';
+import { getUserFavoris, toggleFavori } from './api/user';
 
 const Layout = ({ children }) => (
   <div style={{ display: 'flex' }}>
@@ -34,15 +35,31 @@ const App = () => {
       }
     };
     fetchBooks();
+    // Charger les favoris depuis l'API
+    const fetchFavoris = async () => {
+      if (userId && token) {
+        try {
+          const favs = await getUserFavoris(userId, token);
+          setFavorites(favs.map(f => f._id));
+        } catch (e) {
+          setFavorites([]);
+        }
+      }
+    };
+    fetchFavoris();
   }, [userId, token]);
 
-  const handleToggleFavorite = (bookId) => {
-    setFavorites(favs => {
-      const isFav = favs.includes(bookId);
-      setToast(isFav ? 'Retiré des favoris' : 'Ajouté aux favoris');
+  const handleToggleFavorite = async (bookId) => {
+    if (!userId || !token) return;
+    try {
+      const res = await toggleFavori(userId, bookId, token);
+      setFavorites(res.favoris.map(f => f.toString ? f.toString() : f));
+      setToast(res.message);
       setTimeout(() => setToast(null), 2000);
-      return isFav ? favs.filter(id => id !== bookId) : [...favs, bookId];
-    });
+    } catch (e) {
+      setToast("Erreur lors de la modification des favoris");
+      setTimeout(() => setToast(null), 2000);
+    }
   };
 
   return (
