@@ -7,23 +7,23 @@ const Sidebar = () => {
     <nav className="sidebar">
       <ul>
         <li>
-          <NavLink to="/dashboard" activeClassName="active">
-            📚 Ma bibliothèque
+          <NavLink to="/dashboard" className={({ isActive }) => isActive ? "active" : ""}>
+            📚 My Library
           </NavLink>
         </li>
         <li>
-          <NavLink to="/add-book" activeClassName="active">
-            ➕ Ajouter un livre
+          <NavLink to="/add-book" className={({ isActive }) => isActive ? "active" : ""}>
+            ➕ Add book
           </NavLink>
         </li>
         <li>
-          <NavLink to="/favorites" activeClassName="active">
-            ⭐ Favoris
+          <NavLink to="/favorites" className={({ isActive }) => isActive ? "active" : ""}>
+            ⭐ Favorites
           </NavLink>
         </li>
         <li>
-          <NavLink to="/profile" activeClassName="active">
-            👤 Profil
+          <NavLink to="/profile" className={({ isActive }) => isActive ? "active" : ""}>
+            👤 Profile
           </NavLink>
         </li>
       </ul>

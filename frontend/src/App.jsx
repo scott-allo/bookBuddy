@@ -27,13 +27,14 @@ const App = () => {
   const userId = localStorage.getItem('userId');
   const token = localStorage.getItem('token');
 
+  const fetchBooks = async () => {
+    if (userId && token) {
+      const data = await getUserBooks(userId, token);
+      setBooks(data);
+    }
+  };
+
   useEffect(() => {
-    const fetchBooks = async () => {
-      if (userId && token) {
-        const data = await getUserBooks(userId, token);
-        setBooks(data);
-      }
-    };
     fetchBooks();
     // Charger les favoris depuis l'API
     const fetchFavoris = async () => {
@@ -87,7 +88,7 @@ const App = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/dashboard" element={<Layout><Dashboard books={books} favorites={favorites} onToggleFavorite={handleToggleFavorite} /></Layout>} />
-        <Route path="/add-book" element={<Layout><BookForm /></Layout>} />
+        <Route path="/add-book" element={<Layout><BookForm onBookAdded={fetchBooks} /></Layout>} />
         <Route path="/profile" element={<Layout><Profile /></Layout>} />
         <Route path="/favorites" element={<Layout><Favorites books={books} favorites={favorites} onToggleFavorite={handleToggleFavorite} /></Layout>} />
         {/* D'autres routes à venir, protégées par Layout */}

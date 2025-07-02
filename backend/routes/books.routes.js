@@ -30,5 +30,7 @@ router.put('/:id/progress', booksController.updateProgress);
 router.post('/:id/favorite', booksController.addFavorite);
 // Retirer un livre des favoris
 router.delete('/:id/favorite', booksController.removeFavorite);
+// Supprimer un livre
+router.delete('/:id', booksController.deleteBook);
 
 module.exports = router;

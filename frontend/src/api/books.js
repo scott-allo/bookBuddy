@@ -34,4 +34,18 @@ export async function addBook(book, userId, token, isMultipart = false) {
     throw new Error(error.message || 'Erreur lors de l\'ajout du livre');
   }
   return response.json();
+}
+
+export async function deleteBook(bookId, userId, token) {
+  const response = await fetch(`${API_URL}/${bookId}?userId=${userId}`, {
+    method: 'DELETE',
+    headers: {
+      'Authorization': `Bearer ${token}`
+    }
+  });
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.message || 'Erreur lors de la suppression du livre');
+  }
+  return response.json();
 } 

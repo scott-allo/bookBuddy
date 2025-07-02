@@ -39,7 +39,7 @@ const Login = () => {
   return (
     <div className="login-container">
       <button onClick={getNaruto}>disneyxd</button>
-      <h2>Connexion</h2>
+      <h2>Sign in</h2>
       <form onSubmit={handleSubmit}>
         <input
           type="email"
@@ -50,15 +50,15 @@ const Login = () => {
         />
         <input
           type="password"
-          placeholder="Mot de passe"
+          placeholder="Password"
           value={password}
           onChange={e => setPassword(e.target.value)}
           required
         />
-        <button type="submit">Se connecter</button>
+        <button type="submit">Sign in</button>
       </form>
       {error && <p style={{color: 'red'}}>{error}</p>}
-      <p>Pas encore de compte ? <a href="/register">Créer un compte</a></p>
+      <p>Don't have an account? <a href="/register">Create one</a></p>
     </div>
   );
 };

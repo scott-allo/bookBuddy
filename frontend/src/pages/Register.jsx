@@ -27,11 +27,11 @@ const Register = () => {
 
   return (
     <div className="register-container">
-      <h2>Inscription</h2>
+      <h2>Sign up</h2>
       <form onSubmit={handleSubmit}>
         <input
           type="text"
-          placeholder="Nom complet"
+          placeholder="Full name"
           value={nom}
           onChange={e => setNom(e.target.value)}
           required
@@ -45,23 +45,23 @@ const Register = () => {
         />
         <input
           type="password"
-          placeholder="Mot de passe"
+          placeholder="Password"
           value={password}
           onChange={e => setPassword(e.target.value)}
           required
         />
         <input
           type="password"
-          placeholder="Confirmer le mot de passe"
+          placeholder="Confirm password"
           value={confirmPassword}
           onChange={e => setConfirmPassword(e.target.value)}
           required
         />
-        <button type="submit">S'inscrire</button>
+        <button type="submit">Sign up</button>
       </form>
       {error && <p style={{color: 'red'}}>{error}</p>}
-      {success && <p style={{color: 'green'}}>Inscription réussie ! Vous pouvez vous connecter.</p>}
-      <p>Déjà un compte ? <a href="/login">Se connecter</a></p>
+      {success && <p style={{color: 'green'}}>Registration successful! You can now sign in.</p>}
+      <p>Already have an account? <a href="/login">Sign in</a></p>
     </div>
   );
 };
