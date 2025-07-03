@@ -6,7 +6,7 @@ exports.addBook = async (req, res) => {
   try {
     console.log('BODY:', req.body);
     console.log('FILE:', req.file);
-    const { titre, auteur, image_url, nb_pages, categorie, status, userId, description } = req.body;
+    const { titre, auteur, image_url, nb_pages, nb_tomes, tomes_lus, categorie, status, userId, description } = req.body;
     let imagePath = image_url;
     if (req.file) {
       imagePath = '/uploads/' + req.file.filename;
@@ -16,6 +16,8 @@ exports.addBook = async (req, res) => {
       auteur,
       image_url: imagePath,
       nb_pages: Number(nb_pages),
+      nb_tomes: nb_tomes ? Number(nb_tomes) : undefined,
+      tomes_lus: tomes_lus ? Number(tomes_lus) : 0,
       categorie,
       progression: 0, // par défaut
       status,

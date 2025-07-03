@@ -75,10 +75,15 @@ const BookModal = ({ book, open, onClose, isFavorite, onToggleFavorite, onDelete
                 : 'To read'}
             </span>
           )}
+          {/* Progression sur les tomes */}
+          {typeof book.nb_tomes !== 'undefined' && book.nb_tomes !== null && (
+            <div style={{marginBottom: 10, fontWeight: 600, fontSize: 16, color: '#1976d2'}}>
+              Progression : Tome {book.tomes_lus || 0} / {book.nb_tomes}
+            </div>
+          )}
           <div style={{display: 'flex', gap: 32, marginBottom: 10, justifyContent: 'flex-start'}}>
             <div><b style={{fontWeight: 600}}>Author</b><br/>{book.auteur}</div>
             <div><b style={{fontWeight: 600}}>Genre</b><br/>{book.categorie || '-'}</div>
-            <div><b style={{fontWeight: 600}}>Pages</b><br/>{book.nb_pages || '-'}</div>
           </div>
           {/* Description */}
           <div style={{marginTop: 10, color: '#444', fontSize: 16, lineHeight: 1.5}}>

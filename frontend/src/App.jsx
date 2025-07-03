@@ -14,7 +14,7 @@ import { getUserFavoris, toggleFavori } from './api/user';
 const Layout = ({ children }) => (
   <div style={{ display: 'flex' }}>
     <Sidebar />
-    <div style={{ marginLeft: 200, width: '100%' }}>
+    <div style={{ marginLeft: 200, minHeight: '100vh', background: '#f5f4f0', width: 'calc(100vw - 200px)' }}>
       {children}
     </div>
   </div>
