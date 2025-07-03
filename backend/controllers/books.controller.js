@@ -4,14 +4,32 @@ const User = require('../models/User');
 // Ajouter un nouveau livre à la collection de l'utilisateur
 exports.addBook = async (req, res) => {
   try {
-    const { titre, auteur, image_url, nb_pages, categorie, progression, userId } = req.body;
-    const livre = new Livre({ titre, auteur, image_url, nb_pages, categorie, progression });
+    console.log('BODY:', req.body);
+    console.log('FILE:', req.file);
+    const { titre, auteur, image_url, nb_pages, nb_tomes, tomes_lus, categorie, status, userId, description } = req.body;
+    let imagePath = image_url;
+    if (req.file) {
+      imagePath = '/uploads/' + req.file.filename;
+    }
+    const livre = new Livre({
+      titre,
+      auteur,
+      image_url: imagePath,
+      nb_pages: Number(nb_pages),
+      nb_tomes: nb_tomes ? Number(nb_tomes) : undefined,
+      tomes_lus: tomes_lus ? Number(tomes_lus) : 0,
+      categorie,
+      progression: 0, // par défaut
+      status,
+      description
+    });
     const savedBook = await livre.save();
-    // Ajouter le livre à la collection de l'utilisateur
+    console.log('LIVRE SAUVEGARDE:', savedBook);
     await User.findByIdAndUpdate(userId, { $push: { livres: savedBook._id } });
     res.status(201).json(savedBook);
   } catch (err) {
-    res.status(500).json({ message: 'Erreur lors de l\'ajout du livre', error: err.message });
+    console.error(err);
+    res.status(500).json({ message: "Erreur lors de l'ajout du livre", error: err.message });
   }
 };
 
@@ -94,5 +112,24 @@ exports.removeFavorite = async (req, res) => {
     res.json({ message: 'Livre retiré des favoris' });
   } catch (err) {
     res.status(500).json({ message: 'Erreur lors du retrait des favoris', error: err.message });
+  }
+};
+
+// Supprimer un livre
+exports.deleteBook = async (req, res) => {
+  try {
+    const livreId = req.params.id;
+    const userId = req.query.userId;
+    // Supprimer le livre de la collection Livre
+    await Livre.findByIdAndDelete(livreId);
+    // Retirer l'ID du livre du tableau livres de l'utilisateur
+    if (userId) {
+      await User.findByIdAndUpdate(userId, { $pull: { livres: livreId } });
+    }
+    // Retirer l'ID du livre du tableau favoris de tous les utilisateurs
+    await User.updateMany({}, { $pull: { favoris: livreId } });
+    res.json({ message: 'Livre supprimé avec succès' });
+  } catch (err) {
+    res.status(500).json({ message: "Erreur lors de la suppression du livre", error: err.message });
   }
 };
