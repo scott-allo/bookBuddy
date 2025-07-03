@@ -9,11 +9,12 @@ import Profile from './pages/Profile';
 import Favorites from './pages/Favorites';
 import { useEffect, useState } from 'react';
 import { getUserBooks } from './api/books';
+import { getUserFavoris, toggleFavori } from './api/user';
 
 const Layout = ({ children }) => (
   <div style={{ display: 'flex' }}>
     <Sidebar />
-    <div style={{ marginLeft: 200, width: '100%' }}>
+    <div style={{ marginLeft: 200, minHeight: '100vh', background: '#f5f4f0', width: 'calc(100vw - 200px)' }}>
       {children}
     </div>
   </div>
@@ -26,23 +27,40 @@ const App = () => {
   const userId = localStorage.getItem('userId');
   const token = localStorage.getItem('token');
 
+  const fetchBooks = async () => {
+    if (userId && token) {
+      const data = await getUserBooks(userId, token);
+      setBooks(data);
+    }
+  };
+
   useEffect(() => {
-    const fetchBooks = async () => {
+    fetchBooks();
+    // Charger les favoris depuis l'API
+    const fetchFavoris = async () => {
       if (userId && token) {
-        const data = await getUserBooks(userId, token);
-        setBooks(data);
+        try {
+          const favs = await getUserFavoris(userId, token);
+          setFavorites(favs.map(f => f._id));
+        } catch (e) {
+          setFavorites([]);
+        }
       }
     };
-    fetchBooks();
+    fetchFavoris();
   }, [userId, token]);
 
-  const handleToggleFavorite = (bookId) => {
-    setFavorites(favs => {
-      const isFav = favs.includes(bookId);
-      setToast(isFav ? 'Retiré des favoris' : 'Ajouté aux favoris');
+  const handleToggleFavorite = async (bookId) => {
+    if (!userId || !token) return;
+    try {
+      const res = await toggleFavori(userId, bookId, token);
+      setFavorites(res.favoris.map(f => f.toString ? f.toString() : f));
+      setToast(res.message);
       setTimeout(() => setToast(null), 2000);
-      return isFav ? favs.filter(id => id !== bookId) : [...favs, bookId];
-    });
+    } catch (e) {
+      setToast("Erreur lors de la modification des favoris");
+      setTimeout(() => setToast(null), 2000);
+    }
   };
 
   return (
@@ -70,7 +88,7 @@ const App = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/dashboard" element={<Layout><Dashboard books={books} favorites={favorites} onToggleFavorite={handleToggleFavorite} /></Layout>} />
-        <Route path="/add-book" element={<Layout><BookForm /></Layout>} />
+        <Route path="/add-book" element={<Layout><BookForm onBookAdded={fetchBooks} /></Layout>} />
         <Route path="/profile" element={<Layout><Profile /></Layout>} />
         <Route path="/favorites" element={<Layout><Favorites books={books} favorites={favorites} onToggleFavorite={handleToggleFavorite} /></Layout>} />
         {/* D'autres routes à venir, protégées par Layout */}

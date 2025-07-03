@@ -5,11 +5,15 @@ const livreSchema = new mongoose.Schema({
   auteur: { type: String, required: true },
   image_url: String,
   nb_pages: Number,
-  categorie: String,
+  nb_tomes: Number,
+  tomes_lus: { type: Number, default: 0 },
+  categorie: { type: String },
   progression: {
     type: Number, // ou un objet plus complexe si besoin
     default: 0
-  }
+  },
+  status: { type: String },
+  description: { type: String },
 });
 
 module.exports = mongoose.model('Livre', livreSchema);

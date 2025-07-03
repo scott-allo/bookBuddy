@@ -44,4 +44,31 @@ export async function uploadAvatar(userId, file, token) {
     throw new Error(error.message || 'Erreur lors de l\'upload de l\'avatar');
   }
   return response.json();
+}
+
+export async function getUserFavoris(userId, token) {
+  const response = await fetch(`${API_URL}/${userId}/favoris`, {
+    headers: {
+      'Authorization': `Bearer ${token}`
+    }
+  });
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.message || 'Erreur lors de la récupération des favoris');
+  }
+  return response.json();
+}
+
+export async function toggleFavori(userId, livreId, token) {
+  const response = await fetch(`${API_URL}/${userId}/favoris/${livreId}`, {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${token}`
+    }
+  });
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.message || 'Erreur lors de la modification des favoris');
+  }
+  return response.json();
 } 

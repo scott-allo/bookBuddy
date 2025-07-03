@@ -93,20 +93,22 @@ const Profile = () => {
   return (
     <div className="profile-container" style={{display: 'flex', gap: 40, alignItems: 'flex-start', padding: 40}}>
       <form onSubmit={handleSubmit} style={{flex: 1, maxWidth: 400, display: 'flex', flexDirection: 'column', gap: 20}}>
-        <h2>Profil utilisateur</h2>
+        <h2>User profile</h2>
         <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="Email" required />
-        <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="Nouveau mot de passe" />
-        <input type="text" value={nom} onChange={e => setNom(e.target.value)} placeholder="Nom complet" required />
-        <input type="date" value={dateOfBirth} onChange={e => setDateOfBirth(e.target.value)} placeholder="Date de naissance" />
+        <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="New password" autoComplete="new-password" />
+        <input type="text" value={nom} onChange={e => setNom(e.target.value)} placeholder="Full name" required />
+        <input type="date" value={dateOfBirth} onChange={e => setDateOfBirth(e.target.value)} placeholder="Date of birth" />
         <select value={gender} onChange={e => setGender(e.target.value)}>
           {genders.map(g => <option key={g} value={g}>{g}</option>)}
         </select>
-        <button type="submit">Confirmer</button>
+        <button type="submit">Save</button>
         {error && <p style={{color: 'red'}}>{error}</p>}
-        {success && <p style={{color: 'green'}}>Profil mis à jour !</p>}
+        {success && <p style={{color: 'green'}}>Profile updated!</p>}
       </form>
       <div style={{flex: 1, maxWidth: 300, textAlign: 'center'}}>
-        <img src={avatarUrl} alt="avatar" style={{width: 120, height: 120, borderRadius: '50%', objectFit: 'cover', marginBottom: 10}} />
+        {avatarUrl && (
+          <img src={avatarUrl} alt="avatar" style={{width: 120, height: 120, borderRadius: '50%', objectFit: 'cover', marginBottom: 10}} />
+        )}
         <input
           type="file"
           accept="image/*"
@@ -131,10 +133,10 @@ const Profile = () => {
           }}
           onClick={() => fileInputRef.current && fileInputRef.current.click()}
         >
-          Changer la photo
+          Change photo
         </button>
-        {uploading && <p>Envoi en cours...</p>}
-        <button onClick={handleLogout} style={{marginTop: 10, background: '#fafafa', border: 'none', borderRadius: 10, padding: '10px 30px'}}>log out</button>
+        {uploading && <p>Uploading...</p>}
+        <button onClick={handleLogout} style={{marginTop: 10, background: '#fafafa', border: 'none', borderRadius: 10, padding: '10px 30px'}}>Log out</button>
       </div>
     </div>
   );
