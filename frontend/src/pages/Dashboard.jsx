@@ -25,7 +25,7 @@ const Dashboard = ({ books, favorites, onToggleFavorite }) => {
     setCurrentPage(1); // reset page sur nouvelle recherche
   }, [search, books]);
 
-  // Pagination : calcul des indices
+ 
   const totalPages = Math.ceil(filteredBooks.length / booksPerPage);
   const startIdx = (currentPage - 1) * booksPerPage;
   const endIdx = startIdx + booksPerPage;
@@ -55,7 +55,7 @@ const Dashboard = ({ books, favorites, onToggleFavorite }) => {
     }
   };
 
-  // Utilitaire pour obtenir la bonne URL d'image
+ 
   const getBookImageUrl = (book) => {
     if (!book.image_url) return '';
     if (book.image_url.startsWith('/uploads/')) {

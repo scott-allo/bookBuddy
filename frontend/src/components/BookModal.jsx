@@ -1,6 +1,6 @@
 import React from 'react';
 
-// Utilitaire pour obtenir la bonne URL d'image
+
 const getBookImageUrl = (book) => {
   if (!book?.image_url) return '';
   if (book.image_url.startsWith('/uploads/')) {
