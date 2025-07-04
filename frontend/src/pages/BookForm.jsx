@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { addBook } from '../api/books';
 import ManualBookForm from './ManualBookForm';
+import toast from 'react-hot-toast';
 
 const BookForm = ({ onBookAdded }) => {
   const [titre, setTitre] = useState('');
@@ -79,6 +80,10 @@ const BookForm = ({ onBookAdded }) => {
     setTomesLus(0);
     setResults([]);
     setSearch(manga.title || '');
+    if (searchRef.current) {
+      const input = searchRef.current.querySelector('input');
+      if (input) input.blur();
+    }
   };
 
   const isFormDisabled = !selectedManga;
@@ -103,9 +108,65 @@ const BookForm = ({ onBookAdded }) => {
       }
       formData.append('userId', userId);
       formData.append('description', selectedSynopsis);
-      await addBook(formData, userId, token, true);
+      const response = await addBook(formData, userId, token, true);
+      console.log('Réponse backend:', response);
+      if (response.badge) {
+        toast.custom(
+          <div style={{
+            background: 'transparent',
+            boxShadow: 'none',
+            padding: 0,
+            margin: 0,
+            border: 'none',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center'
+          }}>
+            <img
+              src="/img/hxh.gif"
+              alt="manga badge"
+              style={{
+                width: 400,
+                height: 400,
+                display: 'block',
+                objectFit: 'cover',
+                background: 'transparent',
+                margin: 0,
+                padding: 0,
+                border: 'none',
+                borderRadius: 0,
+                boxShadow: 'none',
+              }}
+            />
+            <div style={{
+              color: '#e63946',
+              fontWeight: 900,
+              fontSize: 32,
+              marginTop: 18,
+              textAlign: 'center',
+              textShadow: '0 2px 8px #fff8'
+            }}>
+              New badge unlocked!
+            </div>
+            <div style={{
+              color: '#222',
+              fontWeight: 700,
+              fontSize: 26,
+              marginTop: 8,
+              textAlign: 'center'
+            }}>
+              {response.badge.label || response.badge.nom}
+            </div>
+          </div>,
+          { duration: 1300 }
+        );
+      }
       setSuccess(true);
-      setTitre(''); setAuteur(''); setImageUrl(''); setNbPages(''); setNbTomes(''); setTomesLus(0); setCategorie(''); setStatus('to read'); setCoverFile(null); setCoverPreview(''); setSelectedManga(null); setSelectedSynopsis('');
+      setTitre(''); setAuteur(''); setImageUrl(''); setNbPages(''); setNbTomes(''); setTomesLus(0); setCategorie(''); setStatus('to read'); setCoverFile(null); setCoverPreview(''); setSelectedManga(null); setSelectedSynopsis(''); setSearch(''); setResults([]);
+      if (searchRef.current) {
+        const input = searchRef.current.querySelector('input');
+        if (input) input.blur();
+      }
       if (onBookAdded) onBookAdded();
     } catch (err) {
       setError(err.message);
@@ -282,7 +343,7 @@ const BookForm = ({ onBookAdded }) => {
         </form>
       </div>
       {/* Formulaire manuel */}
-      <div style={{flex: 1, minWidth: 320, maxWidth: 420, width: '100%', marginTop: 30}}>
+      <div style={{flex: 1, minWidth: 320, maxWidth: 420, width: '100%', marginTop: -40}}>
         <ManualBookForm onBookAdded={onBookAdded} />
       </div>
     </div>
