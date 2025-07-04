@@ -1,5 +1,6 @@
 const Livre = require('../models/Livre');
 const User = require('../models/User');
+const rewardsController = require('./rewards.controller');
 
 // Ajouter un nouveau livre à la collection de l'utilisateur
 exports.addBook = async (req, res) => {
@@ -24,9 +25,27 @@ exports.addBook = async (req, res) => {
       description
     });
     const savedBook = await livre.save();
-    console.log('LIVRE SAUVEGARDE:', savedBook);
     await User.findByIdAndUpdate(userId, { $push: { livres: savedBook._id } });
-    res.status(201).json(savedBook);
+
+    // Recharge l'utilisateur APRÈS le push pour avoir la liste à jour
+    const userAfterPush = await User.findById(userId);
+    const nbLivres = userAfterPush.livres.length;
+    let badgeType = null;
+    if (nbLivres === 1) badgeType = 'lecture-1-livre';
+    else if (nbLivres === 3) badgeType = 'lecture-3-livres';
+    else if (nbLivres === 5) badgeType = 'lecture-5-livres';
+    else if (nbLivres === 7) badgeType = 'lecture-7-livres';
+    else if (nbLivres === 10) badgeType = 'lecture-10-livres';
+    console.log('nbLivres:', nbLivres, 'badgeType:', badgeType);
+    let badgeResult = null;
+    if (badgeType) {
+      console.log('Tentative d\'attribution du badge :', badgeType);
+      badgeResult = await rewardsController.giveBadgeToUser(userId, badgeType);
+    }
+    console.log('nbLivres:', nbLivres, 'badgeType:', badgeType, 'badgeResult:', badgeResult);
+    console.log('Après ajout, user.livres.length =', nbLivres);
+
+    res.status(201).json({ book: savedBook, badge: badgeResult });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Erreur lors de l'ajout du livre", error: err.message });
